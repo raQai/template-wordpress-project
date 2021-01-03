@@ -31,7 +31,7 @@ function get_destination {
 
   unset '__data[${#__data[@]}-1]';
 
-  echo $( IFS=$'/'; echo "${__data[*]}" )
+  echo "wp-content/$( IFS=$'/'; echo "${__data[*]}" )"
 
   return 0
 }
