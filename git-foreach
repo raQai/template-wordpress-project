@@ -1,0 +1,78 @@
+#!/bin/bash
+
+REPOS="repositories.conf"
+SCRIPT_SOURCE=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+
+function colorize {
+  local RESET='\033[0m'
+  local COL=$1
+  shift
+  printf "${COL}$@${RESET}\n"
+}
+
+function warn {
+  colorize '\033[0;33m' "$@"
+}
+
+function info {
+  colorize '\033[0;36m' "$@"
+}
+
+function pushd {
+  command pushd "$@" > /dev/null
+}
+
+function popd {
+  command popd "$@" > /dev/null
+}
+
+function get_destination {
+  local __data=("$@")
+
+  unset '__data[${#__data[@]}-1]';
+
+  echo $( IFS=$'/'; echo "${__data[*]}" )
+
+  return 0
+}
+
+function get_repository {
+  local __data=("$@")
+
+  echo "${__data[-1]}" \
+    || echo "${__data[${#__data[@]}-1]}" \
+    || return 1
+
+  return 0
+}
+
+pushd $SCRIPT_SOURCE
+
+while read -r line
+do
+  # skip comments and empty lines
+  [[ $line =~ ^#.* ]] || [[ -z $line ]] && continue
+
+  # split line to $data array using delim=';'
+  IFS=';' read -r -a data <<< "$line"
+
+  # no key specified
+  [[ ${#data[@]} -le 1 ]] \
+    && warn "ERROR: No key specified!" \
+    && echo "Ignoring line: $line" \
+    && echo "See repositories.conf for documentation." \
+    && continue
+
+  folder=$(get_destination ${data[@]})
+  repo=$(get_repository ${data[@]})
+
+  mkdir -p $folder
+
+  pushd $folder
+  info "$PWD"
+  info "git $@ $repo"
+  git "$@" $repo
+  popd
+done < "$REPOS"
+
+popd
