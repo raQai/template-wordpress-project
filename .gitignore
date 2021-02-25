@@ -1,1 +1,4 @@
-wp-content/
+src/*
+!src/.gitkeep
+wp-content/*
+!wp-content/.gitkeep
