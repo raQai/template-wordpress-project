@@ -1,7 +1,10 @@
 #!/bin/bash
 
-REPOS="repositories.conf"
+CONFIG="repositories.conf"
+
 SCRIPT_SOURCE=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+
+SRC_DIR="src"
 
 function colorize {
   local RESET='\033[0m'
@@ -26,53 +29,47 @@ function popd {
   command popd "$@" > /dev/null
 }
 
-function get_destination {
-  local __data=("$@")
-
-  unset '__data[${#__data[@]}-1]';
-
-  echo "wp-content/$( IFS=$'/'; echo "${__data[*]}" )"
-
-  return 0
-}
-
-function get_repository {
-  local __data=("$@")
-
-  echo "${__data[-1]}" \
-    || echo "${__data[${#__data[@]}-1]}" \
-    || return 1
-
-  return 0
-}
-
 pushd $SCRIPT_SOURCE
 
-while read -r line
+line_nr=0
+
+while read -r line || [[ -n "$line" ]]
 do
+  ((++line_nr))
+  info $line
+
   # skip comments and empty lines
   [[ $line =~ ^#.* ]] || [[ -z $line ]] && continue
 
-  # split line to $data array using delim=';'
-  IFS=';' read -r -a data <<< "$line"
+  name=${line%%:*}
+  repository=${line#*:}
+  folder="${SRC_DIR}/${name}"
 
-  # no key specified
-  [[ ${#data[@]} -le 1 ]] \
-    && warn "ERROR: No key specified!" \
-    && echo "Ignoring line: $line" \
-    && echo "See repositories.conf for documentation." \
+  # wrong format
+  [[ $line != *":"* ]] || [[ -z $name ]] || [[ -z $repository ]] \
+    && warn "ERROR: Wrong format!" \
+    && echo "Ignoring line ${line_nr}: ${line}" \
+    && echo "See README for documentation." \
     && continue
 
-  folder=$(get_destination ${data[@]})
-  repo=$(get_repository ${data[@]})
+  # check if folder exists, if not clone
+  [[ ! -d $folder ]] && git clone $repository $folder
 
-  mkdir -p $folder
+  [[ ! -d $folder ]] \
+    && warn "ERROR: Source folder '${folder}' does not exist." \
+    && echo "There might have been an error cloning the repository '${repository}'" \
+    && echo "Ignoring line ${line_nr}: ${line}" \
+    && continue
+
+  [[ $# -eq 0 ]] && continue
 
   pushd $folder
-  info "$PWD"
-  info "git $@ $repo"
-  git "$@" $repo
+
+  info "${name}: git ${@}"
+  git "$@"
+
   popd
-done < "$REPOS"
+
+done < "$CONFIG"
 
 popd
