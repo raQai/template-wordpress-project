@@ -14,7 +14,7 @@ do
   info $line
 
   # skip comments and empty lines
-  [[ $line =~ ^#.* ]] || [[ -z $line ]] && continue
+  is_comment_or_empty $line && continue
 
   name=${line%%:*}
   repository=${line#*:}

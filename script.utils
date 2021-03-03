@@ -20,3 +20,7 @@ function pushd {
 function popd {
   command popd "$@" > /dev/null
 }
+
+function is_comment_or_empty {
+  [[ "$@" =~ ^#.* ]] || [[ -z "$@" ]]
+}
