@@ -1,0 +1,22 @@
+function colorize {
+  local RESET='\033[0m'
+  local COL=$1
+  shift
+  printf "${COL}$@${RESET}\n"
+}
+
+function warn {
+  colorize '\033[0;33m' "$@"
+}
+
+function info {
+  colorize '\033[0;36m' "$@"
+}
+
+function pushd {
+  command pushd "$@" > /dev/null
+}
+
+function popd {
+  command popd "$@" > /dev/null
+}

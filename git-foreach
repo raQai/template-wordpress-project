@@ -1,34 +1,9 @@
 #!/bin/bash
 
-CONFIG="repositories.conf"
+source script.conf
+source script.utils
 
 SCRIPT_SOURCE=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-
-SRC_DIR="src"
-
-function colorize {
-  local RESET='\033[0m'
-  local COL=$1
-  shift
-  printf "${COL}$@${RESET}\n"
-}
-
-function warn {
-  colorize '\033[0;33m' "$@"
-}
-
-function info {
-  colorize '\033[0;36m' "$@"
-}
-
-function pushd {
-  command pushd "$@" > /dev/null
-}
-
-function popd {
-  command popd "$@" > /dev/null
-}
-
 pushd $SCRIPT_SOURCE
 
 line_nr=0
@@ -70,6 +45,6 @@ do
 
   popd
 
-done < "$CONFIG"
+done < "$REPOSITORIES_CONF"
 
 popd
