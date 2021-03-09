@@ -15,3 +15,14 @@ This will also be used to create the corresponding directory within the `src` fo
 The git repository
 
 Comments may be added by prepending a `#`
+
+## TODO
+- build all script
+  - build from src
+  - move to distribution folder
+- dockerize
+  - scripts for general tasks
+  - add cli
+  - auto setup
+- download of external plugins/themes
+- auto build on change
