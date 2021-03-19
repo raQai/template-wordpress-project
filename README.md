@@ -12,14 +12,49 @@ The name defining the git repository in this project.
 This will also be used to create the corresponding directory within the `src` folder.
 
 `repository`:\
-The git repository
+The git repository.
 
-Comments may be added by prepending a `#`
+Comments may be added by prepending a `#`.
+
+## build.conf
+Use `build.conf` to define how the repositories should be added to the wordpress installation.
+
+Requires one of the following patterns to register the build:\
+`<name>:<destination-path>`\
+or\
+`<name>:<destination-path>:<build-command>:<distribution-path>`
+
+`name`:\
+The name defining the git repository in this project. Also see `repositories.conf`.
+
+`destination-path`:\
+The folder within the `wp-contents` folder e.g. `plugins`.
+
+`build-command`:\
+The full build command. Currentyl this fails if the build command contains any colon `:` characters.
+
+`distribution-path`:\
+The actual plugin or theme folder to distribute to the `wp-contents` folder.
+
+If no build command is specyfied, the entire source folder will be copied.
+
+Comments may be added by prepending a `#`.
+
+## Using this wrapper
+### Pull repositories
+```
+#> ./git-foreach
+```
+### Build
+```
+#> ./build-all
+```
+### Running docker
+```
+#> docker-compose up
+```
 
 ## TODO
-- build all script
-  - build from src
-  - move to distribution folder
 - dockerize
   - scripts for general tasks
   - add cli
