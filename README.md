@@ -53,6 +53,7 @@ Comments may be added by prepending a `#`.
 ```
 #> docker-compose up
 ```
+The container should be reachable through `127.0.0.3:80`. The local address can be specified within the `.env` file.
 
 ## TODO
 - dockerize

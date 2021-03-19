@@ -31,4 +31,4 @@ services:
       - db
     restart: always
     ports:
-      - 127.0.0.3:80:80
+      - ${LOCAL_ADDRESS:-80}:80
