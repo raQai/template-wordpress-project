@@ -47,7 +47,7 @@ Comments may be added by prepending a `#`.
 ```
 ### Build
 ```
-#> ./build-all
+#> ./build.sh
 ```
 ### Running docker
 ```
