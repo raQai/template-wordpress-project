@@ -43,7 +43,7 @@ Comments may be added by prepending a `#`.
 ## Using this wrapper
 ### Pull repositories
 ```
-#> ./git-foreach
+#> ./git-foreach.sh
 ```
 ### Build
 ```
