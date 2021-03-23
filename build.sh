@@ -21,6 +21,11 @@ do
     && continue
 
   name=${line%%:*}
+
+  # skip build for entries where the name does match the first parameter (if present)
+  # allowing to build only one dependency at a time.
+  [[ $# -ne 0 ]] && [[ $1 != $name ]] && continue
+
   dest_folder=${line#*:}
   src_folder="${SRC_DIR}/${name}"
 
